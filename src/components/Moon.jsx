@@ -6,7 +6,10 @@ export const Moon = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
+  const [lastPosition, setLastPosition] = useState({ x: 50, y: 30 });
   const moonRef = useRef(null);
+  const animationRef = useRef(null);
 
   // Check for theme changes (Temporary, later replace with sun)
   useEffect(() => {
@@ -27,9 +30,58 @@ export const Moon = () => {
     return () => observer.disconnect();
   }, []);
 
+  // Physics animation for momentum
+  useEffect(() => {
+    if (!isDragging && (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1)) {
+      const animate = () => {
+        setPosition(prev => {
+          const newX = prev.x + velocity.x;
+          const newY = prev.y + velocity.y;
+          
+          // Bounce off edges
+          let finalX = newX;
+          let finalY = newY;
+          let newVelX = velocity.x;
+          let newVelY = velocity.y;
+          
+          if (newX <= 5 || newX >= 95) {
+            finalX = newX <= 5 ? 5 : 95;
+            newVelX = -velocity.x * 0.7; // Bounce with energy loss
+          }
+          
+          if (newY <= 5 || newY >= 95) {
+            finalY = newY <= 5 ? 5 : 95;
+            newVelY = -velocity.y * 0.7; // Bounce with energy loss
+          }
+          
+          // Apply friction
+          newVelX *= 0.95;
+          newVelY *= 0.95;
+          
+          setVelocity({ x: newVelX, y: newVelY });
+          
+          return { x: finalX, y: finalY };
+        });
+        
+        if (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1) {
+          animationRef.current = requestAnimationFrame(animate);
+        }
+      };
+      
+      animationRef.current = requestAnimationFrame(animate);
+    }
+    
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isDragging, velocity]);
+
   // Handle mouse down on moon
   const handleMouseDown = (e) => {
     setIsDragging(true);
+    setVelocity({ x: 0, y: 0 }); // Stop any momentum
     
     if (moonRef.current) {
       const rect = moonRef.current.getBoundingClientRect();
@@ -50,12 +102,19 @@ export const Moon = () => {
         const constrainedX = Math.max(5, Math.min(95, newX));
         const constrainedY = Math.max(5, Math.min(95, newY));
         
+        // Calculate velocity for momentum
+        const velX = constrainedX - lastPosition.x;
+        const velY = constrainedY - lastPosition.y;
+        
+        setVelocity({ x: velX * 0.3, y: velY * 0.3 }); // Scale down for smoother movement
+        setLastPosition({ x: constrainedX, y: constrainedY });
         setPosition({ x: constrainedX, y: constrainedY });
       }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
+      // Velocity will continue the movement via the physics useEffect
     };
 
     if (isDragging) {
@@ -67,7 +126,7 @@ export const Moon = () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging, dragOffset, lastPosition]);
 
   // Don't render moon in light mode
   if (!isDarkMode) {
