@@ -72,8 +72,7 @@ export const Moon = () => {
         className="w-full h-full rounded-full animate-float"
         style={{
           animation: 'float 6s ease-in-out infinite, spin 20s linear infinite',
-          background: `url(${moonAsset}) center/cover`,
-          backgroundSize: '100% 100%',
+          background: `url(${moonAsset}) center`,
           boxShadow: `
             0 0 20px rgba(255, 255, 255, 0.3),
             inset -5px -5px 10px rgba(0, 0, 0, 0.1),
