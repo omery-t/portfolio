@@ -5,7 +5,27 @@ export const Moon = () => {
   const [position, setPosition] = useState({ x: 50, y: 30 }); // Initial position
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const moonRef = useRef(null);
+
+  // Check for theme changes (Temporary, later replace with sun)
+  useEffect(() => {
+    const checkTheme = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+
+    // Check initially
+    checkTheme();
+
+    // Listen for theme changes
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Handle mouse down on moon
   const handleMouseDown = (e) => {
@@ -49,45 +69,31 @@ export const Moon = () => {
     };
   }, [isDragging, dragOffset]);
 
+  // Don't render moon in light mode
+  if (!isDarkMode) {
+    return null;
+  }
+
   return (
     <button
       ref={moonRef}
       type="button"
-      className={`
-        fixed z-10 cursor-pointer select-none transition-transform duration-300
-        hover:scale-110 active:scale-95 border-none bg-transparent p-0
-        ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}
-      `}
+      className={`moon-button ${isDragging ? 'dragging' : ''}`}
       style={{
         left: `${position.x}%`,
         top: `${position.y}%`,
-        transform: 'translate(-50%, -50%)',
-        width: '80px',
-        height: '80px',
       }}
       onMouseDown={handleMouseDown}
       aria-label="Interactive moon - click and drag to move"
     >
       <div
-        className="w-full h-full rounded-full animate-float"
+        className="moon-surface"
         style={{
-          animation: 'float 6s ease-in-out infinite, spin 20s linear infinite',
-          background: `url(${moonAsset}) center`,
-          boxShadow: `
-            0 0 20px rgba(255, 255, 255, 0.3),
-            inset -5px -5px 10px rgba(0, 0, 0, 0.1),
-            inset 5px 5px 10px rgba(255, 255, 255, 0.2)
-          `,
+          backgroundImage: `url(${moonAsset})`,
         }}
       />
       
-      <div
-        className="absolute inset-0 rounded-full pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%)',
-          animation: 'pulse-subtle 4s ease-in-out infinite',
-        }}
-      />
+      <div className="moon-glow" />
     </button>
   );
 };
