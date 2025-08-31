@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Moon } from './Moon'
 
 export const StarBackground = () => {
     const [stars, setStars] = useState([]);
@@ -40,8 +41,10 @@ export const StarBackground = () => {
         return meteorsArray;
     }
 
-    // Render stars and meteors
+    // Render moon, stars and meteors
     return <div className='fixed inset-0 overflow-hidden pointer-events-nonez-0'> 
+        <Moon />
+        
         {stars.map(star => (
             <div 
                 key={star.id} className='star animate-pulse-subtle' style = {{
