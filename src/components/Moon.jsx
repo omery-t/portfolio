@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import moonAsset from '@/assets/moon.png';
 
 export const Moon = () => {
-  const [position, setPosition] = useState({ x: 50, y: 30 }); // Initial position
+  const [position, setPosition] = useState({ x: 80, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDarkMode, setIsDarkMode] = useState(true);
