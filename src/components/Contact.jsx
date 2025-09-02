@@ -1,4 +1,4 @@
-import { Mail, Github, Linkedin, Twitter } from 'lucide-react';
+import { Mail, Github, Linkedin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const Contact = () => {

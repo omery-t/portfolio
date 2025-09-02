@@ -4,14 +4,15 @@ import moonAsset from '@/assets/moon.png';
 export const Moon = () => {
   const [position, setPosition] = useState({ x: 80, y: 20 });
   const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDarkMode, setIsDarkMode] = useState(true);
-  const [velocity, setVelocity] = useState({ x: 0, y: 0 });
-  const [lastPosition, setLastPosition] = useState({ x: 50, y: 30 });
-  const moonRef = useRef(null);
-  const animationRef = useRef(null);
+  
+    const moonRef = useRef(null);
+    const animationRef = useRef(null);
+    const velocityRef = useRef({ x: 0, y: 0 });
+    const lastPositionRef = useRef(position);
+    const dragOffsetRef = useRef({ x: 0, y: 0 });
 
-  // Check for theme changes (Temporary, later replace with sun)
+  // Detect system dark mode
   useEffect(() => {
     const checkTheme = () => {
       setIsDarkMode(document.documentElement.classList.contains('dark'));
@@ -32,112 +33,109 @@ export const Moon = () => {
 
   // Physics animation for momentum
   useEffect(() => {
-    if (!isDragging && (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1)) {
+    if (!isDragging) {
       const animate = () => {
-        setPosition(prev => {
-          const newX = prev.x + velocity.x;
-          const newY = prev.y + velocity.y;
-          
+        setPosition((prev) => {
+          let { x: vx, y: vy } = velocityRef.current;
+          let newX = prev.x + vx;
+          let newY = prev.y + vy;
+
           // Bounce off edges
-          let finalX = newX;
-          let finalY = newY;
-          let newVelX = velocity.x;
-          let newVelY = velocity.y;
-          
           if (newX <= 5 || newX >= 95) {
-            finalX = newX <= 5 ? 5 : 95;
-            newVelX = -velocity.x * 0.7; // Bounce with energy loss
+            newX = newX <= 5 ? 5 : 95;
+            vx = -vx * 0.7;
           }
-          
           if (newY <= 5 || newY >= 95) {
-            finalY = newY <= 5 ? 5 : 95;
-            newVelY = -velocity.y * 0.7; // Bounce with energy loss
+            newY = newY <= 5 ? 5 : 95;
+            vy = -vy * 0.7;
           }
-          
+
           // Apply friction
-          newVelX *= 0.95;
-          newVelY *= 0.95;
-          
-          setVelocity({ x: newVelX, y: newVelY });
-          
-          return { x: finalX, y: finalY };
+          vx *= 0.95;
+          vy *= 0.95;
+
+          velocityRef.current = { x: vx, y: vy };
+
+          return { x: newX, y: newY };
         });
-        
-        if (Math.abs(velocity.x) > 0.1 || Math.abs(velocity.y) > 0.1) {
+
+        if (
+          Math.abs(velocityRef.current.x) > 0.1 ||
+          Math.abs(velocityRef.current.y) > 0.1
+        ) {
           animationRef.current = requestAnimationFrame(animate);
         }
       };
-      
+
       animationRef.current = requestAnimationFrame(animate);
     }
-    
+
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isDragging, velocity]);
+  }, [isDragging]);
 
   // Handle mouse down on moon
   const handleMouseDown = (e) => {
     setIsDragging(true);
-    setVelocity({ x: 0, y: 0 }); // Stop any momentum
-    
+    velocityRef.current = { x: 0, y: 0 }; // stop momentum
+
     if (moonRef.current) {
       const rect = moonRef.current.getBoundingClientRect();
-      const offsetX = e.clientX - rect.left - rect.width / 2;
-      const offsetY = e.clientY - rect.top - rect.height / 2;
-      setDragOffset({ x: offsetX, y: offsetY });
+      dragOffsetRef.current = {
+        x: e.clientX - rect.left - rect.width / 2,
+        y: e.clientY - rect.top - rect.height / 2,
+      };
     }
   };
 
-  // Handle mouse movement for dragging
+  // Handle mouse movement
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (isDragging) {
-        const newX = ((e.clientX - dragOffset.x) / window.innerWidth) * 100;
-        const newY = ((e.clientY - dragOffset.y) / window.innerHeight) * 100;
-        
-        // Constrain to viewport bounds
+        const newX =
+          ((e.clientX - dragOffsetRef.current.x) / window.innerWidth) * 100;
+        const newY =
+          ((e.clientY - dragOffsetRef.current.y) / window.innerHeight) * 100;
+
         const constrainedX = Math.max(5, Math.min(95, newX));
         const constrainedY = Math.max(5, Math.min(95, newY));
-        
-        // Calculate velocity for momentum
-        const velX = constrainedX - lastPosition.x;
-        const velY = constrainedY - lastPosition.y;
-        
-        setVelocity({ x: velX * 0.3, y: velY * 0.3 }); // Scale down for smoother movement
-        setLastPosition({ x: constrainedX, y: constrainedY });
+
+        const velX = constrainedX - lastPositionRef.current.x;
+        const velY = constrainedY - lastPositionRef.current.y;
+
+        velocityRef.current = { x: velX * 0.3, y: velY * 0.3 };
+        lastPositionRef.current = { x: constrainedX, y: constrainedY };
+
         setPosition({ x: constrainedX, y: constrainedY });
       }
     };
 
     const handleMouseUp = () => {
       setIsDragging(false);
-      // Velocity will continue the movement via the physics useEffect
     };
 
     if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [isDragging, dragOffset, lastPosition]);
+  }, [isDragging]);
 
   // Don't render moon in light mode
-  if (!isDarkMode) {
-    return null;
-  }
+  if (!isDarkMode) { return null;}
 
   return (
     <button
       ref={moonRef}
       type="button"
-      className={`moon-button ${isDragging ? 'dragging' : ''}`}
+      className={`moon-button ${isDragging ? "dragging" : ""}`}
       style={{
         left: `${position.x}%`,
         top: `${position.y}%`,
@@ -151,7 +149,6 @@ export const Moon = () => {
           backgroundImage: `url(${moonAsset})`,
         }}
       />
-      
       <div className="moon-glow" />
     </button>
   );
