@@ -2,6 +2,8 @@
 
 A personal portfolio website built with **React** and **Vite**.
 
+🔗 **Live Site:** [https://omery-t.github.io/portfolio/](https://omery-t.github.io/portfolio/)
+
 ---
 
 ## Features
