@@ -18,7 +18,7 @@ export const Contact = () => {
                         If you have a question, want to collaborate, or just want to say hi, feel free to <span className="nav-glow" style={{ color: 'hsl(var(--primary))' }}>reach out!</span>
                     </p>
                 </div>
-                
+
                 {/* Contact Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 opacity-0 animate-fade-in-delay-2">
                     <div className="relative w-full sm:w-auto group">

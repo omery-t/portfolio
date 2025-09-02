@@ -1,5 +1,3 @@
-
-
 import { StarBackground } from "./StarBackground";
 import { Moon } from "./Moon";
 import { Navbar } from "./Navbar";

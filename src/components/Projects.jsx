@@ -1,8 +1,10 @@
+import { scrollToSection } from '@/lib/utils';
+
 export const Projects = () => {
     const projects = [
         {
             title: "Interactive Portfolio",
-            description: "A cosmic-themed portfolio with interactive celestials and stellar animations",
+            description: "A cosmic-themed portfolio with interactive celestials and stellar movements.",
             tech: ["React", "Tailwind CSS", "Vite"],
             status: "Current Project"
         },
@@ -24,39 +26,39 @@ export const Projects = () => {
             tech: ["Python", "Blender"],
             status: "Work in Progress"
         }
-        
+
     ];
 
     return (
-        <section id="projects" className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
+        <section id="projects" className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
             <div className="max-w-6xl mx-auto text-center">
                 <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-8 sm:mb-16 opacity-0 animate-fade-in">
                     My Projects
                 </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                <div className="projects-grid">
                     {projects.map((project, index) => (
-                        <div 
+                        <div
                             key={project.title}
-                            className="card-hover p-4 sm:p-6 bg-card rounded-lg border opacity-0 animate-fade-in-delay-1 group cursor-pointer"
+                            className="project-card animate-fade-in-delay-1"
                             style={{ animationDelay: `${index * 150}ms` }}
                         >
                             <div className="text-left">
                                 <div className="flex justify-between items-start mb-3">
-                                    <h3 className="text-lg sm:text-xl font-semibold group-hover:text-primary transition-colors duration-300">
+                                    <h3 className="project-title">
                                         {project.title}
                                     </h3>
-                                    <span className="text-xs sm:text-sm px-2 py-1 bg-primary/10 text-primary rounded-full">
+                                    <span className="project-status">
                                         {project.status}
                                     </span>
                                 </div>
-                                <p className="text-sm sm:text-base text-muted-foreground mb-4 leading-relaxed">
+                                <p className="project-description">
                                     {project.description}
                                 </p>
-                                <div className="flex flex-wrap gap-2">
+                                <div className="project-tech">
                                     {project.tech.map((tech) => (
-                                        <span 
+                                        <span
                                             key={tech}
-                                            className="text-xs sm:text-sm px-2 py-1 bg-secondary rounded-md text-secondary-foreground"
+                                            className="project-tech-badge"
                                         >
                                             {tech}
                                         </span>
@@ -66,6 +68,19 @@ export const Projects = () => {
                         </div>
                     ))}
                 </div>
+            </div>
+
+            {/* Scroll indicator */}
+            <div className="scroll-indicator">
+                <button
+                    onClick={() => scrollToSection('contact')}
+                    className="scroll-indicator-bounce"
+                    aria-label="Scroll to contact section"
+                >
+                    <div className="scroll-indicator-mouse">
+                        <div className="scroll-indicator-mouse-dot"></div>
+                    </div>
+                </button>
             </div>
         </section>
     );

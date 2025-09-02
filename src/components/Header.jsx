@@ -15,25 +15,47 @@ export const Header = () => {
     const [isDarkMode, setIsDarkMode] = useState(true);
 
     useEffect(() => {
+        let ticking = false;
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50);
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    setIsScrolled(window.scrollY > 50);
+                    ticking = false;
+                });
+                ticking = true;
+            }
         };
-        
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useEffect(() => {
         const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            setIsDarkMode(false);
-            document.documentElement.classList.remove('dark');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme) {
+            setIsDarkMode(savedTheme === 'dark');
+            document.documentElement.classList.toggle('dark', savedTheme === 'dark');
         } else {
-            setIsDarkMode(true);
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
+            setIsDarkMode(systemDark);
+            document.documentElement.classList.toggle('dark', systemDark);
         }
     }, []);
+
+    const NavLinks = ({ onClick, className }) => (
+        navItems.map((item) => (
+            <a
+                key={item.name}
+                href={item.href}
+                onClick={(e) => {
+                    e.preventDefault();
+                    onClick(item.href);
+                }}
+                className={className}
+            >
+                {item.name}
+            </a>
+        ))
+    );
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -79,15 +101,7 @@ export const Header = () => {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex space-x-6">
-                    {navItems.map((item) => (
-                        <button 
-                            key={item.name} 
-                            onClick={() => handleNavClick(item.href)}
-                            className="nav-glow text-lg px-3 py-2 rounded transition duration-300"
-                        >
-                            {item.name}
-                        </button>
-                    ))}
+                    <NavLinks onClick={handleNavClick} className="nav-glow text-lg px-3 py-2 rounded transition duration-300" />
                 </nav>
 
                 {/* Right Side Controls */}
@@ -127,15 +141,7 @@ export const Header = () => {
         )}>
             <nav className="max-w-7xl mx-auto px-4 py-4">
                 <div className="flex flex-col space-y-2">
-                    {navItems.map((item) => (
-                        <button 
-                            key={item.name} 
-                            onClick={() => handleNavClick(item.href)}
-                            className="nav-glow text-lg px-4 py-3 rounded-lg text-left transition duration-300 hover:bg-primary/10 border border-transparent hover:border-primary/20"
-                        >
-                            {item.name}
-                        </button>
-                    ))}
+                    <NavLinks onClick={handleNavClick} className="nav-glow text-lg px-4 py-3 rounded-lg text-left transition duration-300 hover:bg-primary/10 border border-transparent hover:border-primary/20" />
                 </div>
             </nav>
         </div>

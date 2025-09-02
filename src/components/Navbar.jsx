@@ -17,7 +17,7 @@ export const Navbar = () => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
-        
+
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -52,8 +52,8 @@ export const Navbar = () => {
             {/* Desktop Navigation */}
             <div className={cn("hidden md:flex space-x-6")}>
                 {navItems.map((item) => (
-                    <button 
-                        key={item.name} 
+                    <button
+                        key={item.name}
                         onClick={() => handleNavClick(item.href)}
                         className={cn("nav-glow text-lg px-2 py-1 rounded transition duration-300")}
                     >
@@ -63,7 +63,7 @@ export const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button */}
-            <button 
+            <button
                 onClick={toggleMobileMenu}
                 className={cn(
                     "flex md:hidden p-2 rounded-lg transition-colors duration-300",
@@ -85,8 +85,8 @@ export const Navbar = () => {
             )}>
                 <div className="flex flex-col p-4 space-y-4">
                     {navItems.map((item) => (
-                        <button 
-                            key={item.name} 
+                        <button
+                            key={item.name}
                             onClick={() => handleNavClick(item.href)}
                             className={cn(
                                 "nav-glow text-lg px-4 py-3 rounded text-left transition duration-300",
