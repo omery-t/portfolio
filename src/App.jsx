@@ -4,7 +4,7 @@ import { Home, NotFound } from "@/pages";
 function App() {
   return (
     <BrowserRouter>
-      <Routes> 
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
