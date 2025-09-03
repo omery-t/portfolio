@@ -19,7 +19,7 @@ export const Hero = () => {
           "text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 text-glow leading-tight",
           "animate-fade-in"
         )}>
-            Welcome to <span className="nav-glow" style={{ color: 'hsl(var(--primary))' }}>The Cosmos</span>
+            Welcome to <span className="nav-glow" style={{ color: 'hsl(var(--primary))' }}>My Space</span>
         </h1>
         
         <p className={cn(

@@ -2,30 +2,7 @@ import { scrollToSection } from '@/lib/utils';
 
 export const Projects = () => {
     const projects = [
-        {
-            title: "Interactive Portfolio",
-            description: "A cosmic-themed portfolio with interactive celestials and stellar movements.",
-            tech: ["React", "Tailwind CSS", "Vite"],
-            status: "Current Project"
-        },
-        {
-            title: "interesting-quotesAPI",
-            description: "Wrapper API collecting notable quotes from various writers and literature.",
-            tech: [".NET Core", "C#"],
-            status: "Coming Soon!"
-        },
-        {
-            title: "protobufgui",
-            description: "GUI for compiling and serializing Protocol Buffers messages.",
-            tech: ["C++", "Qt"],
-            status: "Work in Progress"
-        },
-        {
-            title: "autoRig",
-            description: "Blender addon to auto-generate and connect bones to character meshes.",
-            tech: ["Python", "Blender"],
-            status: "Work in Progress"
-        }
+        
 
     ];
 

@@ -23,3 +23,18 @@ A personal portfolio website built with **React** and **Vite**.
 - **Deployment:** GitHub Pages  
 
 ---
+
+To run the project locally:
+
+```bash
+# Clone the repo
+git clone https://github.com/omery-t/portfolio.git
+
+# Navigate into the project directory
+cd portfolio
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev

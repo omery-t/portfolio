@@ -3,8 +3,7 @@ import { cn } from '@/lib/utils';
 
 export const Contact = () => {
     const socialLinks = [
-        { name: 'GitHub', icon: Github, href: 'https://github.com/omery-t', color: 'hover:text-gray-600' },
-        { name: 'LinkedIn', icon: Linkedin, href: 'https://linkedin.com/in/ömer-yiğit-tatlısu-58aa03219', color: 'hover:text-blue-600' },
+        
     ];
 
     return (
